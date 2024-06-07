@@ -26,19 +26,21 @@ export const CategoriesProvider = ({ children }) => {
   const { loading, error, data } = useQuery(COLLECTIONS_QUERY);
   const [categoriesMap, setCategoriesMap] = useState({});
 
+  useEffect(() => {
+    if (data) {
+      const { collections } = data;
+      const collectionsMap = collections.reduce((accumulator, collection) => {
+        const { title, items } = collection;
+        return accumulator;
+      }, {});
+      setCategoriesMap(collectionsMap, loading);
+    }
+  }, [data]);
+
   console.log("loading ", loading);
   console.log("data ", data);
 
-  // useEffect(() => {
-  //   const getCategoriesMap = async () => {
-  //     const categoryMap = await getCategoriesAndDocuments();
-  //     setCategoriesMap(categoryMap);
-  //   };
-
-  //   getCategoriesMap();
-  // }, []);
-
-  const value = { categoriesMap };
+  const value = { categoriesMap, loading };
   return (
     <CategoriesContext.Provider value={value}>
       {children}
